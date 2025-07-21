@@ -2,7 +2,7 @@
 #include <gsl/gsl_blas.h>
 #include "../include/ode.h"
 
-gsl_matrix* EuleroAvanti(void (*f_ODE)(double,gsl_vector*,gsl_vector*),const double T,const double h, const gsl_vector* y0){
+gsl_matrix* EuleroAvanti(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double t0,double T,double h, gsl_vector* y0,bool (*condizione)(double,gsl_vector*), double *tCondizione){
   const unsigned N_h=(unsigned)(floor(T/h)+1.0);
   
   //Allocazione matrice
@@ -12,10 +12,16 @@ gsl_matrix* EuleroAvanti(void (*f_ODE)(double,gsl_vector*,gsl_vector*),const dou
   
   //EA
   gsl_vector* dy_Buffer=gsl_vector_alloc(y0->size);
-  double t=h;
-  for(unsigned k=1;k < N_h; ++k){
+  double t=t0+h;
+  unsigned k=1;
+  for(;k < N_h; ++k){
     gsl_vector_view O_k_1=gsl_matrix_column(O_sim,k-1);
     gsl_vector_view O_k=gsl_matrix_column(O_sim,k);
+    
+    //Se è verificata la condizione termino
+    bool verificaCondizione = condizione == NULL ? 0 : condizione(t-h,&(O_k_1.vector));
+    if(verificaCondizione) break;
+    
     gsl_vector_add(&(O_k.vector), &(O_k_1.vector));
     
     f_ODE(t-h,&(O_k_1.vector),dy_Buffer);
@@ -24,10 +30,11 @@ gsl_matrix* EuleroAvanti(void (*f_ODE)(double,gsl_vector*,gsl_vector*),const dou
     t += h;
   }
   gsl_vector_free(dy_Buffer);
+  *tCondizione = k==N_h ? t0+T : t-h; //Istante finale della simulazione
   return O_sim;
 }
 
-gsl_matrix* EuleroIndietro(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double T, double h, const gsl_vector* y0){
+gsl_matrix* EuleroIndietro(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double t0,double T, double h, gsl_vector* y0,bool (*condizione)(double,gsl_vector*),double *tCondizione){
   const unsigned N_h=(unsigned)(floor(T/h)+1.0);
   
   //Allocazione matrice
@@ -38,17 +45,23 @@ gsl_matrix* EuleroIndietro(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double 
   //EI
   gsl_vector* dy_Buffer=gsl_vector_alloc(y0->size);
   gsl_vector* PF_tmp=gsl_vector_alloc(y0->size);
-  double t=h;
-  for(unsigned k=1;k < N_h; ++k){
+  double t=t0+h;
+  unsigned k=1;
+  for(;k < N_h; ++k){
     gsl_vector_view O_k_1=gsl_matrix_column(O_sim,k-1);
     gsl_vector_view O_k=gsl_matrix_column(O_sim,k);
+    
+    //Se è verificata la condizione termino
+    bool verificaCondizione = condizione == NULL ? 0 : condizione(t-h,&(O_k_1.vector));
+    if(verificaCondizione) break;
+    
     gsl_vector_memcpy(&(O_k.vector), &(O_k_1.vector));
     
     //Iterazioni di punto fisso
-    double epsilonPF=1e-14,errore=GSL_POSINF;
+    double epsilonPF=1e-15,errore=GSL_POSINF;
     unsigned MAX_ITERS=50;
-    unsigned k=1;
-    while(errore >= epsilonPF && k <= MAX_ITERS){    
+    unsigned j=1;
+    while(errore >= epsilonPF && j <= MAX_ITERS){    
       f_ODE(t,&(O_k.vector),dy_Buffer);
       gsl_vector_scale( dy_Buffer,h );
       gsl_vector_add(dy_Buffer,&(O_k_1.vector));
@@ -58,16 +71,17 @@ gsl_matrix* EuleroIndietro(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double 
       //Uso by_Buffer per il calcolo dell'errore
       gsl_vector_sub(PF_tmp,dy_Buffer);
       errore=gsl_blas_dnrm2(PF_tmp);
-      ++k;
+      ++j;
     }
     t += h;
   }
   gsl_vector_free(dy_Buffer);
   gsl_vector_free(PF_tmp);
+  *tCondizione = k==N_h ? t0+T : t-h; //Istante finale della simulazione
   return O_sim;
 }
 
-gsl_matrix* CrankNicolson(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double T, double h, const gsl_vector* y0){
+gsl_matrix* CrankNicolson(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double t0,double T, double h, gsl_vector* y0,bool (*condizione)(double,gsl_vector*),double *tCondizione){
   const unsigned N_h=(unsigned)(floor(T/h)+1.0);
   
   //Allocazione matrice
@@ -78,10 +92,16 @@ gsl_matrix* CrankNicolson(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double T
   //CN
   gsl_matrix* dy_Buffer=gsl_matrix_alloc(y0->size,2);
   gsl_vector* PF_tmp=gsl_vector_alloc(y0->size);
-  double t=h;
-  for(unsigned k=1;k < N_h; ++k){
+  double t=t0+h;
+  unsigned k=1;
+  for(;k < N_h; ++k){
     gsl_vector_view O_k_1=gsl_matrix_column(O_sim,k-1);
     gsl_vector_view O_k=gsl_matrix_column(O_sim,k);
+    
+    //Se è verificata la condizione termino
+    bool verificaCondizione = condizione == NULL ? 0 : condizione(t-h,&(O_k_1.vector));
+    if(verificaCondizione) break;
+    
     gsl_vector_memcpy(&(O_k.vector), &(O_k_1.vector));
     
     gsl_vector_view f_k_1=gsl_matrix_column(dy_Buffer,0);
@@ -89,10 +109,10 @@ gsl_matrix* CrankNicolson(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double T
     f_ODE(t-h,&(O_k_1.vector),&(f_k_1.vector));
     
     //Iterazioni di punto fisso
-    double epsilonPF=1e-14,errore=GSL_POSINF;
+    double epsilonPF=1e-15,errore=GSL_POSINF;
     unsigned MAX_ITERS=50;
-    unsigned k=1;
-    while(errore >= epsilonPF && k <= MAX_ITERS){    
+    unsigned j=1;
+    while(errore >= epsilonPF && j <= MAX_ITERS){    
       f_ODE(t,&(O_k.vector),&(f_k.vector));
       gsl_vector_add(&(f_k.vector),&(f_k_1.vector));
       
@@ -104,16 +124,17 @@ gsl_matrix* CrankNicolson(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double T
       //Uso by_Buffer per il calcolo dell'errore
       gsl_vector_sub(PF_tmp,&(f_k.vector));
       errore=gsl_blas_dnrm2(PF_tmp);
-      ++k;
+      ++j;
     }
     t += h;
   }
   gsl_matrix_free(dy_Buffer);
   gsl_vector_free(PF_tmp);
+  *tCondizione = k==N_h ? t0+T : t-h; //Istante finale della simulazione
   return O_sim;
 }
 
-gsl_matrix* Heun(void (*f_ODE)(double,gsl_vector*,gsl_vector*),const double T,const double h, const gsl_vector* y0){
+gsl_matrix* Heun(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double t0,double T,double h, gsl_vector* y0,bool (*condizione)(double,gsl_vector*),double *tCondizione){
   const unsigned N_h=(unsigned)(floor(T/h)+1.0);
   
   //Allocazione matrice
@@ -123,10 +144,16 @@ gsl_matrix* Heun(void (*f_ODE)(double,gsl_vector*,gsl_vector*),const double T,co
   
   //Heun
   gsl_matrix* dy_Buffer=gsl_matrix_alloc(y0->size,2);
-  double t=h;
-  for(unsigned k=1;k < N_h; ++k){
+  double t=t0+h;
+  unsigned k=1;
+  for(;k < N_h; ++k){
     gsl_vector_view O_k_1=gsl_matrix_column(O_sim,k-1);
     gsl_vector_view O_k=gsl_matrix_column(O_sim,k);
+    
+    //Se è verificata la condizione termino
+    bool verificaCondizione = condizione == NULL ? 0 : condizione(t-h,&(O_k_1.vector));
+    if(verificaCondizione) break;
+    
     gsl_vector_memcpy(&(O_k.vector), &(O_k_1.vector));
     
     gsl_vector_view f_k_1=gsl_matrix_column(dy_Buffer,0);
@@ -148,10 +175,11 @@ gsl_matrix* Heun(void (*f_ODE)(double,gsl_vector*,gsl_vector*),const double T,co
     t += h;
   }
   gsl_matrix_free(dy_Buffer);
+  *tCondizione = k==N_h ? t0+T : t-h; //Istante finale della simulazione
   return O_sim;
 }
 
-gsl_matrix* RungeKuttaEsplicito(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double T, double h, const gsl_vector* y0, gsl_matrix* A, gsl_vector* B){
+gsl_matrix* RungeKuttaEsplicito(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double t0,double T, double h, gsl_vector* y0, gsl_matrix* A, gsl_vector* B,bool (*condizione)(double,gsl_vector*),double *tCondizione){
   const unsigned N_h=(unsigned)(floor(T/h)+1.0);
   
   //Allocazione matrice
@@ -170,10 +198,16 @@ gsl_matrix* RungeKuttaEsplicito(void (*f_ODE)(double,gsl_vector*,gsl_vector*),do
   //Ottengo i coefficienti c_j
   gsl_blas_dgemv(CblasNoTrans,1.0,A,uni,0.0,C);
   
-  double t=h;
-  for(unsigned k=1;k < N_h; ++k){
+  double t=t0+h;
+  unsigned k=1;
+  for(;k < N_h; ++k){
     gsl_vector_view O_k_1=gsl_matrix_column(O_sim,k-1);
     gsl_vector_view O_k=gsl_matrix_column(O_sim,k);
+    
+    //Se è verificata la condizione termino
+    bool verificaCondizione = condizione == NULL ? 0 : condizione(t-h,&(O_k_1.vector));
+    if(verificaCondizione) break;
+    
     gsl_vector_memcpy(&(O_k.vector), &(O_k_1.vector));
     gsl_matrix_set_zero(K);
     
@@ -201,10 +235,11 @@ gsl_matrix* RungeKuttaEsplicito(void (*f_ODE)(double,gsl_vector*,gsl_vector*),do
   gsl_vector_free(uni);
   gsl_vector_free(C);
   gsl_vector_free(f_k);
+  *tCondizione = k==N_h ? t0+T : t-h; //Istante finale della simulazione
   return O_sim;
 }
 
-gsl_matrix* LMM(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double T, double h, gsl_matrix* innesco, gsl_vector* A, gsl_vector* B, double b_1){
+gsl_matrix* LMM(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double t0,double T, double h, gsl_matrix* innesco, gsl_vector* A, gsl_vector* B, double b_1,bool (*condizione)(double,gsl_vector*),double *tCondizione){
   const unsigned N_h=(unsigned)(floor(T/h)+1.0);
   
   //Allocazione matrice
@@ -226,14 +261,20 @@ gsl_matrix* LMM(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double T, double h
     gsl_vector_view col_p_k_F=gsl_matrix_column(Buffer_F,p-k);
     gsl_matrix_set_col(O_sim,k,&(col_k_O.vector));
     
-    double t_k=(double)k*h;
+    double t_k=t0+(double)k*h;
     f_ODE(t_k,&(col_k_O.vector),&(col_p_k_F.vector));
     gsl_matrix_set_col(Buffer_O,p-k,&(col_k_O.vector));
   }
   
-  double t=(double)(p+1)*h;
-  for(unsigned k=p+1;k < N_h; ++k){
+  double t=t0+(double)(p+1)*h;
+  unsigned k=p+1;
+  for(;k < N_h; ++k){
     gsl_vector_view O_k=gsl_matrix_column(O_sim,k);
+    
+    //Se è verificata la condizione termino
+    gsl_vector_view O_k_1=gsl_matrix_column(O_sim,k-1);
+    bool verificaCondizione = condizione == NULL ? 0 : condizione(t-h,&(O_k_1.vector));
+    if(verificaCondizione) break;
     
     gsl_blas_dgemv(CblasNoTrans,1.0,Buffer_O,A,0.0,CombA);
     gsl_blas_dgemv(CblasNoTrans,1.0,Buffer_F,B,0.0,CombB);
@@ -248,7 +289,7 @@ gsl_matrix* LMM(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double T, double h
       gsl_vector_memcpy(&(O_k.vector), &(O_k_1.vector));
     
       //Iterazioni di punto fisso
-      double epsilonPF=1e-14,errore=GSL_POSINF;
+      double epsilonPF=1e-15,errore=GSL_POSINF;
       unsigned MAX_ITERS=50;
       unsigned j=1;
       while(errore >= epsilonPF && j <= MAX_ITERS){    
@@ -281,5 +322,6 @@ gsl_matrix* LMM(void (*f_ODE)(double,gsl_vector*,gsl_vector*),double T, double h
   gsl_vector_free(CombA);
   gsl_vector_free(PF_tmp);
   gsl_vector_free(f_1);
+  *tCondizione = k==N_h ? t0+T : t-h; //Istante finale della simulazione
   return O_sim;
 }
