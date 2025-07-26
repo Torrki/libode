@@ -6,7 +6,6 @@
 gsl_matrix* EuleroAvanti(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIniziale){
   const size_t NumeroCampioni=(size_t)floor(infoSimulazione->T/infoSimulazione->h)+1;
   const size_t n=statoIniziale->size;
-  
   //Allocazione matrice e inserimento stato iniziale
   gsl_matrix* O_sim=gsl_matrix_alloc(n,NumeroCampioni);
   gsl_matrix_set_zero(O_sim);
@@ -33,8 +32,8 @@ gsl_matrix* EuleroAvanti(struct InfoBaseSimulazione* infoSimulazione,gsl_vector*
   }
   
   //Assegno gli istanti della condizione nel caso sia verificata
-  if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione) = k == NumeroCampioni ? -1.0 : t_k_1;
-  if(infoSimulazione->indiceCondizione) *(infoSimulazione->indiceCondizione) = k == NumeroCampioni ? 0 : k-1;
+  if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione)=t_k_1;
+  if(infoSimulazione->indiceCondizione) *(infoSimulazione->indiceCondizione)=k-1;
   return O_sim;
 }
 
@@ -82,8 +81,8 @@ gsl_matrix* EuleroIndietro(struct InfoBaseSimulazione* infoSimulazione,gsl_vecto
     t_k += infoSimulazione->h;
   }
   //Assegno gli istanti della condizione nel caso sia verificata
-  if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione) = k == NumeroCampioni ? -1.0 : t_k_1;
-  if(infoSimulazione->indiceCondizione) *(infoSimulazione->indiceCondizione) = k == NumeroCampioni ? 0 : k-1;
+  if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione)=t_k_1;
+  if(infoSimulazione->indiceCondizione) *(infoSimulazione->indiceCondizione)=k-1;
   return O_sim;
 }
 
@@ -136,8 +135,8 @@ gsl_matrix* CrankNicolson(struct InfoBaseSimulazione* infoSimulazione,gsl_vector
     t_k += infoSimulazione->h;
   }
   //Assegno gli istanti della condizione nel caso sia verificata
-  if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione) = k == NumeroCampioni ? -1.0 : t_k_1;
-  if(infoSimulazione->indiceCondizione) *(infoSimulazione->indiceCondizione) = k == NumeroCampioni ? 0 : k-1;
+  if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione)=t_k_1;
+  if(infoSimulazione->indiceCondizione) *(infoSimulazione->indiceCondizione)=k-1;
   return O_sim;
 }
 
@@ -182,8 +181,8 @@ gsl_matrix* Heun(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIn
     t_k += infoSimulazione->h;
   }
   //Assegno gli istanti della condizione nel caso sia verificata
-  if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione) = k == NumeroCampioni ? -1.0 : t_k_1;
-  if(infoSimulazione->indiceCondizione) *(infoSimulazione->indiceCondizione) = k == NumeroCampioni ? 0 : k-1;
+  if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione)=t_k_1;
+  if(infoSimulazione->indiceCondizione) *(infoSimulazione->indiceCondizione)=k-1;
   return O_sim;
 }
 
@@ -243,8 +242,8 @@ gsl_matrix* RungeKuttaEsplicito(struct InfoBaseSimulazione* infoSimulazione,doub
     t_k += infoSimulazione->h;
   }
   //Assegno gli istanti della condizione nel caso sia verificata
-  if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione) = k == NumeroCampioni ? -1.0 : t_k_1;
-  if(infoSimulazione->indiceCondizione) *(infoSimulazione->indiceCondizione) = k == NumeroCampioni ? 0 : k-1;
+  if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione)=t_k_1;
+  if(infoSimulazione->indiceCondizione) *(infoSimulazione->indiceCondizione)=k-1;
   return O_sim;
 }
 
@@ -333,7 +332,7 @@ gsl_matrix* LMM(struct InfoBaseSimulazione* infoSimulazione,double* A_LMM,double
     t_k += infoSimulazione->h;
   }
   //Assegno gli istanti della condizione nel caso sia verificata
-  if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione) = k == NumeroCampioni ? -1.0 : t_k_1;
-  if(infoSimulazione->indiceCondizione) *(infoSimulazione->indiceCondizione) = k == NumeroCampioni ? 0 : k-1;
+  if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione)=t_k_1;
+  if(infoSimulazione->indiceCondizione) *(infoSimulazione->indiceCondizione)=k-1;
   return O_sim;
 }

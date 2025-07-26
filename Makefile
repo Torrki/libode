@@ -3,11 +3,11 @@
 # Project settings
 TARGET = ode
 SRC_DIR = src
-OBJ_DIR = obj/c
-BIN_DIR = bin/c
+OBJ_DIR = obj/c++
+BIN_DIR = bin/c++
 
 # Tools and flags
-CC = gcc
+CC = g++
 CFLAGS = -fPIC -Wall -Wextra -O2 $(shell pkg-config --cflags gsl)
 LDFLAGS = -shared $(shell pkg-config --libs gsl)
 ARCH = -m64
