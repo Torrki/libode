@@ -4,7 +4,8 @@
 #include <stdio.h>
 
 gsl_matrix* EuleroAvanti(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIniziale){
-  const size_t NumeroCampioni=(size_t)floor(infoSimulazione->T/infoSimulazione->h)+1;
+  double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
+  const size_t NumeroCampioni=(size_t)ceil(pow(10.0,divisioneLog));
   const size_t n=statoIniziale->size;
   //Allocazione matrice e inserimento stato iniziale
   gsl_matrix* O_sim=gsl_matrix_alloc(n,NumeroCampioni);
@@ -38,7 +39,8 @@ gsl_matrix* EuleroAvanti(struct InfoBaseSimulazione* infoSimulazione,gsl_vector*
 }
 
 gsl_matrix* EuleroIndietro(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIniziale){
-  const size_t NumeroCampioni=(size_t)floor(infoSimulazione->T/infoSimulazione->h)+1;
+  double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
+  const size_t NumeroCampioni=(size_t)ceil(pow(10.0,divisioneLog));
   const size_t n=statoIniziale->size;
   
   //Allocazione matrice
@@ -87,7 +89,8 @@ gsl_matrix* EuleroIndietro(struct InfoBaseSimulazione* infoSimulazione,gsl_vecto
 }
 
 gsl_matrix* CrankNicolson(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIniziale){
-  const size_t NumeroCampioni=(size_t)floor(infoSimulazione->T/infoSimulazione->h)+1;
+  double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
+  const size_t NumeroCampioni=(size_t)ceil(pow(10.0,divisioneLog));
   const size_t n=statoIniziale->size;
   
   //Allocazione matrice
@@ -141,7 +144,8 @@ gsl_matrix* CrankNicolson(struct InfoBaseSimulazione* infoSimulazione,gsl_vector
 }
 
 gsl_matrix* Heun(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIniziale){
-  const size_t NumeroCampioni=(size_t)floor(infoSimulazione->T/infoSimulazione->h)+1;
+  double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
+  const size_t NumeroCampioni=(size_t)ceil(pow(10.0,divisioneLog));
   const size_t n=statoIniziale->size;
   
   //Allocazione matrice
@@ -187,7 +191,8 @@ gsl_matrix* Heun(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIn
 }
 
 gsl_matrix* RungeKuttaEsplicito(struct InfoBaseSimulazione* infoSimulazione,double* A_Butcher, double* B_Butcher,const unsigned stadi,gsl_vector* statoIniziale){
-  const size_t NumeroCampioni=(size_t)floor(infoSimulazione->T/infoSimulazione->h)+1;
+  double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
+  const size_t NumeroCampioni=(size_t)ceil(pow(10.0,divisioneLog));
   const size_t n=statoIniziale->size;
   
   //Allocazione matrice
@@ -248,7 +253,8 @@ gsl_matrix* RungeKuttaEsplicito(struct InfoBaseSimulazione* infoSimulazione,doub
 }
 
 gsl_matrix* LMM(struct InfoBaseSimulazione* infoSimulazione,double* A_LMM,double* B_LMM,double b_1,gsl_matrix* innesco){
-  const size_t NumeroCampioni=(size_t)floor(infoSimulazione->T/infoSimulazione->h)+1;
+  double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
+  const size_t NumeroCampioni=(size_t)ceil(pow(10.0,divisioneLog));
   const size_t n=innesco->size1;
   const size_t p=innesco->size2-1;
   
@@ -279,15 +285,14 @@ gsl_matrix* LMM(struct InfoBaseSimulazione* infoSimulazione,double* A_LMM,double
   }
   
   double t_k=infoSimulazione->t0+((double)(p+1))*infoSimulazione->h,t_k_1=t_k-infoSimulazione->h;
-  unsigned k=p+2;
-  for(;k <= NumeroCampioni; ++k){
-    unsigned i=k-1; //indice della matrice
-    gsl_vector_view O_k_1=gsl_matrix_column(O_sim,i-1);
+  unsigned k=p+1;
+  for(;k < NumeroCampioni; ++k){
+    gsl_vector_view O_k_1=gsl_matrix_column(O_sim,k-1);
     //Se è verificata la condizione termino
     bool verificaCondizione = infoSimulazione->condizione == NULL ? 0 : infoSimulazione->condizione(t_k_1,&(O_k_1.vector));
     if(verificaCondizione) break;
     
-    gsl_vector_view O_k=gsl_matrix_column(O_sim,i);
+    gsl_vector_view O_k=gsl_matrix_column(O_sim,k-1);
     gsl_blas_dgemv(CblasNoTrans,1.0,&(Buffer_O.matrix),&(A.vector),0.0,&(CombA.vector));
     gsl_blas_dgemv(CblasNoTrans,1.0,&(Buffer_F.matrix),&(B.vector),0.0,&(CombB.vector));
     gsl_vector_scale(&(CombB.vector),infoSimulazione->h);
