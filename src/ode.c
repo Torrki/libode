@@ -5,7 +5,7 @@
 
 gsl_matrix* EuleroAvanti(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIniziale){
   double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
-  const size_t NumeroCampioni=(size_t)ceil(pow(10.0,divisioneLog));
+  const size_t NumeroCampioni=(size_t)floor(pow(10.0,divisioneLog))+1;
   const size_t n=statoIniziale->size;
   //Allocazione matrice e inserimento stato iniziale
   gsl_matrix* O_sim=gsl_matrix_alloc(n,NumeroCampioni);
@@ -29,7 +29,7 @@ gsl_matrix* EuleroAvanti(struct InfoBaseSimulazione* infoSimulazione,gsl_vector*
     infoSimulazione->dinamica(t_k_1,&(O_k_1.vector),&(dy_Buffer.vector));
     gsl_vector_scale( &(dy_Buffer.vector),infoSimulazione->h );
     gsl_vector_add( &(O_k.vector), &(dy_Buffer.vector));
-    t_k_1 += infoSimulazione->h;
+    t_k_1 = infoSimulazione->t0+((double)k)*infoSimulazione->h;
   }
   
   //Assegno gli istanti della condizione nel caso sia verificata
@@ -40,7 +40,7 @@ gsl_matrix* EuleroAvanti(struct InfoBaseSimulazione* infoSimulazione,gsl_vector*
 
 gsl_matrix* EuleroIndietro(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIniziale){
   double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
-  const size_t NumeroCampioni=(size_t)ceil(pow(10.0,divisioneLog));
+  const size_t NumeroCampioni=(size_t)floor(pow(10.0,divisioneLog))+1;
   const size_t n=statoIniziale->size;
   
   //Allocazione matrice
@@ -80,7 +80,7 @@ gsl_matrix* EuleroIndietro(struct InfoBaseSimulazione* infoSimulazione,gsl_vecto
       ++j;
     }
     t_k_1=t_k;
-    t_k += infoSimulazione->h;
+    t_k = infoSimulazione->t0+((double)(k+1))*infoSimulazione->h;
   }
   //Assegno gli istanti della condizione nel caso sia verificata
   if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione)=t_k_1;
@@ -90,7 +90,7 @@ gsl_matrix* EuleroIndietro(struct InfoBaseSimulazione* infoSimulazione,gsl_vecto
 
 gsl_matrix* CrankNicolson(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIniziale){
   double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
-  const size_t NumeroCampioni=(size_t)ceil(pow(10.0,divisioneLog));
+  const size_t NumeroCampioni=(size_t)floor(pow(10.0,divisioneLog))+1;
   const size_t n=statoIniziale->size;
   
   //Allocazione matrice
@@ -135,7 +135,7 @@ gsl_matrix* CrankNicolson(struct InfoBaseSimulazione* infoSimulazione,gsl_vector
       ++j;
     }
     t_k_1=t_k;
-    t_k += infoSimulazione->h;
+    t_k = infoSimulazione->t0+((double)(k+1))*infoSimulazione->h;
   }
   //Assegno gli istanti della condizione nel caso sia verificata
   if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione)=t_k_1;
@@ -145,7 +145,7 @@ gsl_matrix* CrankNicolson(struct InfoBaseSimulazione* infoSimulazione,gsl_vector
 
 gsl_matrix* Heun(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIniziale){
   double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
-  const size_t NumeroCampioni=(size_t)ceil(pow(10.0,divisioneLog));
+  const size_t NumeroCampioni=(size_t)floor(pow(10.0,divisioneLog))+1;
   const size_t n=statoIniziale->size;
   
   //Allocazione matrice
@@ -182,7 +182,7 @@ gsl_matrix* Heun(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIn
     gsl_vector_memcpy(&(O_k.vector),&(O_k_1.vector));
     gsl_vector_add(&(O_k.vector),&(f_k.vector));
     t_k_1=t_k;
-    t_k += infoSimulazione->h;
+    t_k = infoSimulazione->t0+((double)(k+1))*infoSimulazione->h;
   }
   //Assegno gli istanti della condizione nel caso sia verificata
   if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione)=t_k_1;
@@ -192,7 +192,7 @@ gsl_matrix* Heun(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIn
 
 gsl_matrix* RungeKuttaEsplicito(struct InfoBaseSimulazione* infoSimulazione,double* A_Butcher, double* B_Butcher,const unsigned stadi,gsl_vector* statoIniziale){
   double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
-  const size_t NumeroCampioni=(size_t)ceil(pow(10.0,divisioneLog));
+  const size_t NumeroCampioni=(size_t)floor(pow(10.0,divisioneLog))+1;
   const size_t n=statoIniziale->size;
   
   //Allocazione matrice
@@ -244,7 +244,7 @@ gsl_matrix* RungeKuttaEsplicito(struct InfoBaseSimulazione* infoSimulazione,doub
     gsl_vector_scale(&(f_k.vector),infoSimulazione->h);
     gsl_vector_add(&(O_k.vector),&(f_k.vector));
     t_k_1=t_k;
-    t_k += infoSimulazione->h;
+    t_k = infoSimulazione->t0+((double)(k+1))*infoSimulazione->h;
   }
   //Assegno gli istanti della condizione nel caso sia verificata
   if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione)=t_k_1;
@@ -254,9 +254,12 @@ gsl_matrix* RungeKuttaEsplicito(struct InfoBaseSimulazione* infoSimulazione,doub
 
 gsl_matrix* LMM(struct InfoBaseSimulazione* infoSimulazione,double* A_LMM,double* B_LMM,double b_1,gsl_matrix* innesco){
   double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
-  const size_t NumeroCampioni=(size_t)ceil(pow(10.0,divisioneLog));
+  const size_t NumeroCampioni=(size_t)floor(pow(10.0,divisioneLog))+1;
   const size_t n=innesco->size1;
   const size_t p=innesco->size2-1;
+  
+  printf("-------LMM-------\n");
+  printf("n: %lu\tp: %lu\tCampioni: %lu\n",n,p,NumeroCampioni);
   
   //Allocazione matrice
   gsl_matrix* O_sim=gsl_matrix_alloc(n,NumeroCampioni);
@@ -274,7 +277,8 @@ gsl_matrix* LMM(struct InfoBaseSimulazione* infoSimulazione,double* A_LMM,double
   gsl_vector_view A=gsl_vector_view_array(A_LMM,p+1);
   gsl_vector_view B=gsl_vector_view_array(B_LMM,p+1);
   
-  for(unsigned k=0; k<p+1; ++k){
+  size_t k=0;
+  for(; k<p+1; ++k){
     gsl_vector_view col_k_O=gsl_matrix_column(innesco,k);
     gsl_vector_view col_p_k_F=gsl_matrix_column(&(Buffer_F.matrix),p-k);
     gsl_matrix_set_col(O_sim,k,&(col_k_O.vector));
@@ -283,16 +287,18 @@ gsl_matrix* LMM(struct InfoBaseSimulazione* infoSimulazione,double* A_LMM,double
     infoSimulazione->dinamica(t_k,&(col_k_O.vector),&(col_p_k_F.vector));
     gsl_matrix_set_col(&(Buffer_O.matrix),p-k,&(col_k_O.vector));
   }
-  
-  double t_k=infoSimulazione->t0+((double)(p+1))*infoSimulazione->h,t_k_1=t_k-infoSimulazione->h;
-  unsigned k=p+1;
+  printf("k: %lu\n", k);
+  gsl_matrix_fprintf(stdout,&(Buffer_O.matrix),"%.10lf");
+  double t_k=infoSimulazione->t0+((double)(k))*infoSimulazione->h,t_k_1=infoSimulazione->t0+((double)(k-1))*infoSimulazione->h;
   for(;k < NumeroCampioni; ++k){
     gsl_vector_view O_k_1=gsl_matrix_column(O_sim,k-1);
     //Se è verificata la condizione termino
+    //printf("\nO_k_1\n");
+    //gsl_vector_fprintf(stdout,&(O_k_1.vector),"%.10lf");
     bool verificaCondizione = infoSimulazione->condizione == NULL ? 0 : infoSimulazione->condizione(t_k_1,&(O_k_1.vector));
     if(verificaCondizione) break;
     
-    gsl_vector_view O_k=gsl_matrix_column(O_sim,k-1);
+    gsl_vector_view O_k=gsl_matrix_column(O_sim,k);
     gsl_blas_dgemv(CblasNoTrans,1.0,&(Buffer_O.matrix),&(A.vector),0.0,&(CombA.vector));
     gsl_blas_dgemv(CblasNoTrans,1.0,&(Buffer_F.matrix),&(B.vector),0.0,&(CombB.vector));
     gsl_vector_scale(&(CombB.vector),infoSimulazione->h);
@@ -334,7 +340,7 @@ gsl_matrix* LMM(struct InfoBaseSimulazione* infoSimulazione,double* A_LMM,double
     gsl_matrix_set_col(&(Buffer_F.matrix),0,&(f_1.vector));
     
     t_k_1=t_k;
-    t_k += infoSimulazione->h;
+    t_k = infoSimulazione->t0+((double)(k+1))*infoSimulazione->h;
   }
   //Assegno gli istanti della condizione nel caso sia verificata
   if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione)=t_k_1;
