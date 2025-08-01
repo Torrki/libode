@@ -258,9 +258,6 @@ gsl_matrix* LMM(struct InfoBaseSimulazione* infoSimulazione,double* A_LMM,double
   const size_t n=innesco->size1;
   const size_t p=innesco->size2-1;
   
-  printf("-------LMM-------\n");
-  printf("n: %lu\tp: %lu\tCampioni: %lu\n",n,p,NumeroCampioni);
-  
   //Allocazione matrice
   gsl_matrix* O_sim=gsl_matrix_alloc(n,NumeroCampioni);
   gsl_matrix_set_zero(O_sim);
@@ -287,8 +284,6 @@ gsl_matrix* LMM(struct InfoBaseSimulazione* infoSimulazione,double* A_LMM,double
     infoSimulazione->dinamica(t_k,&(col_k_O.vector),&(col_p_k_F.vector));
     gsl_matrix_set_col(&(Buffer_O.matrix),p-k,&(col_k_O.vector));
   }
-  printf("k: %lu\n", k);
-  gsl_matrix_fprintf(stdout,&(Buffer_O.matrix),"%.10lf");
   double t_k=infoSimulazione->t0+((double)(k))*infoSimulazione->h,t_k_1=infoSimulazione->t0+((double)(k-1))*infoSimulazione->h;
   for(;k < NumeroCampioni; ++k){
     gsl_vector_view O_k_1=gsl_matrix_column(O_sim,k-1);
