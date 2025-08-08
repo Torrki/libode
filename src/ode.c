@@ -4,8 +4,7 @@
 #include <stdio.h>
 
 gsl_matrix* EuleroAvanti(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIniziale){
-  double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
-  const size_t NumeroCampioni=(size_t)floor(pow(10.0,divisioneLog))+1;
+  const size_t NumeroCampioni=(size_t)floor(infoSimulazione->T/infoSimulazione->h)+1;
   const size_t n=statoIniziale->size;
   //Allocazione matrice e inserimento stato iniziale
   gsl_matrix* O_sim=gsl_matrix_alloc(n,NumeroCampioni);
@@ -39,8 +38,7 @@ gsl_matrix* EuleroAvanti(struct InfoBaseSimulazione* infoSimulazione,gsl_vector*
 }
 
 gsl_matrix* EuleroIndietro(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIniziale){
-  double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
-  const size_t NumeroCampioni=(size_t)floor(pow(10.0,divisioneLog))+1;
+  const size_t NumeroCampioni=(size_t)floor(infoSimulazione->T/infoSimulazione->h)+1;
   const size_t n=statoIniziale->size;
   
   //Allocazione matrice
@@ -89,8 +87,7 @@ gsl_matrix* EuleroIndietro(struct InfoBaseSimulazione* infoSimulazione,gsl_vecto
 }
 
 gsl_matrix* CrankNicolson(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIniziale){
-  double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
-  const size_t NumeroCampioni=(size_t)floor(pow(10.0,divisioneLog))+1;
+  const size_t NumeroCampioni=(size_t)floor(infoSimulazione->T/infoSimulazione->h)+1;
   const size_t n=statoIniziale->size;
   
   //Allocazione matrice
@@ -144,8 +141,7 @@ gsl_matrix* CrankNicolson(struct InfoBaseSimulazione* infoSimulazione,gsl_vector
 }
 
 gsl_matrix* Heun(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIniziale){
-  double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
-  const size_t NumeroCampioni=(size_t)floor(pow(10.0,divisioneLog))+1;
+  const size_t NumeroCampioni=(size_t)floor(infoSimulazione->T/infoSimulazione->h)+1;
   const size_t n=statoIniziale->size;
   
   //Allocazione matrice
@@ -191,8 +187,7 @@ gsl_matrix* Heun(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIn
 }
 
 gsl_matrix* RungeKuttaEsplicito(struct InfoBaseSimulazione* infoSimulazione,double* A_Butcher, double* B_Butcher,const unsigned stadi,gsl_vector* statoIniziale){
-  double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
-  const size_t NumeroCampioni=(size_t)floor(pow(10.0,divisioneLog))+1;
+  const size_t NumeroCampioni=(size_t)floor(infoSimulazione->T/infoSimulazione->h)+1;
   const size_t n=statoIniziale->size;
   
   //Allocazione matrice
@@ -253,8 +248,7 @@ gsl_matrix* RungeKuttaEsplicito(struct InfoBaseSimulazione* infoSimulazione,doub
 }
 
 gsl_matrix* LMM(struct InfoBaseSimulazione* infoSimulazione,double* A_LMM,double* B_LMM,double b_1,gsl_matrix* innesco){
-  double divisioneLog=log10(infoSimulazione->T)-log10(infoSimulazione->h);
-  const size_t NumeroCampioni=(size_t)floor(pow(10.0,divisioneLog))+1;
+  const size_t NumeroCampioni=(size_t)floor(infoSimulazione->T/infoSimulazione->h)+1;
   const size_t n=innesco->size1;
   const size_t p=innesco->size2-1;
   
