@@ -1,7 +1,19 @@
 #include <math.h>
 #include <gsl/gsl_blas.h>
-#include "../include/ode.h"
-#include <stdio.h>
+#include <ode.h> 
+
+/*! \brief Struttura dati per le informazioni sulla matrice del calcolo
+ *
+ *  Questa matrice viene scritta sempre all'inizio del file binario per specificare la disposizione del dati nel file
+ */
+struct InfoMatrice{
+  size_t dimensioneStruct; /*!< Dimensione di questa struttura*/
+  size_t righe; /*!< Numero di righe della matrice, ovvero la dimensione dello stato*/
+  size_t colonne; /*!< Numero di colonne della matrice, ovvero numero di passi del calcolo*/
+  double h; /*!< Passo di integrazione*/
+  double T; /*!< Periodo di integrazione*/
+  double t0; /*!< Istante iniziale del calcolo*/
+};
 
 gsl_matrix* EuleroAvanti(struct InfoBaseSimulazione* infoSimulazione,gsl_vector* statoIniziale){
   const size_t NumeroCampioni=(size_t)floor(infoSimulazione->T/infoSimulazione->h)+1;
@@ -335,4 +347,18 @@ gsl_matrix* LMM(struct InfoBaseSimulazione* infoSimulazione,double* A_LMM,double
   if(infoSimulazione->tCondizione) *(infoSimulazione->tCondizione)=t_k_1;
   if(infoSimulazione->indiceCondizione) *(infoSimulazione->indiceCondizione)=k-1;
   return O_sim;
+}
+
+int fwrite_matrix(FILE* file, gsl_matrix* matrice,double h, double T, double t0){
+  struct InfoMatrice infoSimulazione={
+    .dimensioneStruct=sizeof(struct InfoMatrice),
+    .righe=matrice->size1,
+    .colonne=matrice->size2,
+    .h=h,
+    .T=T,
+    .t0=t0
+  };
+  if(fwrite(&infoSimulazione,sizeof(struct InfoMatrice),1,file) == 0) return 1;
+  if(gsl_matrix_fwrite(file,matrice) != 0) return 1;
+  return 0;
 }

@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="it">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.9.8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ODE:  File sorgente include/ode.h</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">ODE<span id="projectnumber">&#160;1.0.0</span>
+   </div>
+   <div id="projectbrief">Libreria per i metodi numerici di integrazione</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generato da Doxygen 1.9.8 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('',true,false,'search.php','Cerca');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(document).ready(function() { init_codefold(0); });
+/* @license-end */
+</script>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">Caricamento in corso...</div>
+<div class="SRStatus" id="Searching">Ricerca in corso...</div>
+<div class="SRStatus" id="NoMatches">Nessun risultato</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle"><div class="title">ode.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="ode_8h.html">Vai alla documentazione di questo file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &lt;gsl/gsl_math.h&gt;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;gsl/gsl_matrix.h&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="ode_8h.html#a40daf6577cb75cc38a150d764dee9b3d">    9</a></span><span class="keyword">typedef</span> void (*<a class="code hl_typedef" href="ode_8h.html#a40daf6577cb75cc38a150d764dee9b3d">ODE</a>)(double,gsl_vector*,gsl_vector*); </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="ode_8h.html#a84603aa8b70cb89e5005fc9dc9f5ea23">   10</a></span><span class="keyword">typedef</span> bool (*<a class="code hl_typedef" href="ode_8h.html#a84603aa8b70cb89e5005fc9dc9f5ea23">Condizione</a>)(double,gsl_vector*); </div>
+<div class="foldopen" id="foldopen00014" data-start="{" data-end="};">
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="structInfoBaseSimulazione.html">   14</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structInfoBaseSimulazione.html">InfoBaseSimulazione</a>{</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="structInfoBaseSimulazione.html#a5e4d10acd6f71904984613c299a55c57">   15</a></span>  <a class="code hl_typedef" href="ode_8h.html#a40daf6577cb75cc38a150d764dee9b3d">ODE</a> <a class="code hl_variable" href="structInfoBaseSimulazione.html#a5e4d10acd6f71904984613c299a55c57">dinamica</a>; </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="structInfoBaseSimulazione.html#a6d4d3268598e63e2ad6562114cf8ec66">   16</a></span>  <a class="code hl_typedef" href="ode_8h.html#a84603aa8b70cb89e5005fc9dc9f5ea23">Condizione</a> <a class="code hl_variable" href="structInfoBaseSimulazione.html#a6d4d3268598e63e2ad6562114cf8ec66">condizione</a>; </div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="structInfoBaseSimulazione.html#a42206ff02bca016ca761e78f71fba313">   17</a></span>  <span class="keywordtype">double</span> *<a class="code hl_variable" href="structInfoBaseSimulazione.html#a42206ff02bca016ca761e78f71fba313">tCondizione</a>; </div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="structInfoBaseSimulazione.html#a994298c0556deae608a0b34c7315e232">   18</a></span>  <span class="keywordtype">size_t</span> *<a class="code hl_variable" href="structInfoBaseSimulazione.html#a994298c0556deae608a0b34c7315e232">indiceCondizione</a>; </div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>  <span class="keywordtype">double</span> t0 </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>  <span class="keywordtype">double</span> T </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="structInfoBaseSimulazione.html#aa92d27d829deaa7195f475e1617a69b5">   21</a></span>  <span class="keywordtype">double</span> <a class="code hl_variable" href="structInfoBaseSimulazione.html#aa92d27d829deaa7195f475e1617a69b5">h</a>; </div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>};</div>
+</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span> </div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>gsl_matrix* <a class="code hl_function" href="ode_8h.html#aca4c761b9e18b772c00bf4673a0924cb">EuleroAvanti</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structInfoBaseSimulazione.html">InfoBaseSimulazione</a>* infoSimulazione,gsl_vector* statoIniziale);</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>gsl_matrix* <a class="code hl_function" href="ode_8h.html#aa14485cddb7c3551aa7244e9bc8fc034">EuleroIndietro</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structInfoBaseSimulazione.html">InfoBaseSimulazione</a>* infoSimulazione,gsl_vector* statoIniziale);</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>gsl_matrix* <a class="code hl_function" href="ode_8h.html#a2ce9674a62fab8c04cccbc88e02637c2">CrankNicolson</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structInfoBaseSimulazione.html">InfoBaseSimulazione</a>* infoSimulazione,gsl_vector* statoIniziale);</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>gsl_matrix* <a class="code hl_function" href="ode_8h.html#a9157de738262e9c439112a4096ed14fd">Heun</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structInfoBaseSimulazione.html">InfoBaseSimulazione</a>* infoSimulazione,gsl_vector* statoIniziale);</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>gsl_matrix* <a class="code hl_function" href="ode_8h.html#aa43cd6c8e12d08ed02a8909d5d6136e2">RungeKuttaEsplicito</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structInfoBaseSimulazione.html">InfoBaseSimulazione</a>* infoSimulazione,<span class="keywordtype">double</span>* A_Butcher, <span class="keywordtype">double</span>* B_Butcher,<span class="keyword">const</span> <span class="keywordtype">unsigned</span> stadi,gsl_vector* statoIniziale);</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>gsl_matrix* <a class="code hl_function" href="ode_8h.html#a2016888128c8014e261da3e240c7e288">LMM</a>(<span class="keyword">struct</span> <a class="code hl_struct" href="structInfoBaseSimulazione.html">InfoBaseSimulazione</a>* infoSimulazione,<span class="keywordtype">double</span>* A_LMM,<span class="keywordtype">double</span>* B_LMM,<span class="keywordtype">double</span> b_1,gsl_matrix* innesco);</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="keywordtype">int</span> <a class="code hl_function" href="ode_8h.html#a29ab1cc0f4b59c49774c9933360551bc">fwrite_matrix</a>(FILE* file, gsl_matrix* matrice,<span class="keywordtype">double</span> h, <span class="keywordtype">double</span> T, <span class="keywordtype">double</span> t0);</div>
+<div class="ttc" id="aode_8h_html_a2016888128c8014e261da3e240c7e288"><div class="ttname"><a href="ode_8h.html#a2016888128c8014e261da3e240c7e288">LMM</a></div><div class="ttdeci">gsl_matrix * LMM(struct InfoBaseSimulazione *infoSimulazione, double *A_LMM, double *B_LMM, double b_1, gsl_matrix *innesco)</div><div class="ttdoc">Metodo di integrazione LMM.</div><div class="ttdef"><b>Definition</b> <a href="ode_8c_source.html#l00262">ode.c:262</a></div></div>
+<div class="ttc" id="aode_8h_html_a29ab1cc0f4b59c49774c9933360551bc"><div class="ttname"><a href="ode_8h.html#a29ab1cc0f4b59c49774c9933360551bc">fwrite_matrix</a></div><div class="ttdeci">int fwrite_matrix(FILE *file, gsl_matrix *matrice, double h, double T, double t0)</div><div class="ttdoc">Funzione per scrivere in formato binario il risultato del calcolo.</div><div class="ttdef"><b>Definition</b> <a href="ode_8c_source.html#l00352">ode.c:352</a></div></div>
+<div class="ttc" id="aode_8h_html_a2ce9674a62fab8c04cccbc88e02637c2"><div class="ttname"><a href="ode_8h.html#a2ce9674a62fab8c04cccbc88e02637c2">CrankNicolson</a></div><div class="ttdeci">gsl_matrix * CrankNicolson(struct InfoBaseSimulazione *infoSimulazione, gsl_vector *statoIniziale)</div><div class="ttdoc">Metodo di integrazione Crank Nicholson.</div><div class="ttdef"><b>Definition</b> <a href="ode_8c_source.html#l00101">ode.c:101</a></div></div>
+<div class="ttc" id="aode_8h_html_a40daf6577cb75cc38a150d764dee9b3d"><div class="ttname"><a href="ode_8h.html#a40daf6577cb75cc38a150d764dee9b3d">ODE</a></div><div class="ttdeci">void(* ODE)(double, gsl_vector *, gsl_vector *)</div><div class="ttdef"><b>Definition</b> <a href="ode_8h_source.html#l00009">ode.h:9</a></div></div>
+<div class="ttc" id="aode_8h_html_a84603aa8b70cb89e5005fc9dc9f5ea23"><div class="ttname"><a href="ode_8h.html#a84603aa8b70cb89e5005fc9dc9f5ea23">Condizione</a></div><div class="ttdeci">bool(* Condizione)(double, gsl_vector *)</div><div class="ttdef"><b>Definition</b> <a href="ode_8h_source.html#l00010">ode.h:10</a></div></div>
+<div class="ttc" id="aode_8h_html_a9157de738262e9c439112a4096ed14fd"><div class="ttname"><a href="ode_8h.html#a9157de738262e9c439112a4096ed14fd">Heun</a></div><div class="ttdeci">gsl_matrix * Heun(struct InfoBaseSimulazione *infoSimulazione, gsl_vector *statoIniziale)</div><div class="ttdoc">Metodo di integrazione Heun.</div><div class="ttdef"><b>Definition</b> <a href="ode_8c_source.html#l00155">ode.c:155</a></div></div>
+<div class="ttc" id="aode_8h_html_aa14485cddb7c3551aa7244e9bc8fc034"><div class="ttname"><a href="ode_8h.html#aa14485cddb7c3551aa7244e9bc8fc034">EuleroIndietro</a></div><div class="ttdeci">gsl_matrix * EuleroIndietro(struct InfoBaseSimulazione *infoSimulazione, gsl_vector *statoIniziale)</div><div class="ttdoc">Metodo di integrazione Eulero Indietro.</div><div class="ttdef"><b>Definition</b> <a href="ode_8c_source.html#l00052">ode.c:52</a></div></div>
+<div class="ttc" id="aode_8h_html_aa43cd6c8e12d08ed02a8909d5d6136e2"><div class="ttname"><a href="ode_8h.html#aa43cd6c8e12d08ed02a8909d5d6136e2">RungeKuttaEsplicito</a></div><div class="ttdeci">gsl_matrix * RungeKuttaEsplicito(struct InfoBaseSimulazione *infoSimulazione, double *A_Butcher, double *B_Butcher, const unsigned stadi, gsl_vector *statoIniziale)</div><div class="ttdoc">Metodo di integrazione Runge Kutta.</div><div class="ttdef"><b>Definition</b> <a href="ode_8c_source.html#l00201">ode.c:201</a></div></div>
+<div class="ttc" id="aode_8h_html_aca4c761b9e18b772c00bf4673a0924cb"><div class="ttname"><a href="ode_8h.html#aca4c761b9e18b772c00bf4673a0924cb">EuleroAvanti</a></div><div class="ttdeci">gsl_matrix * EuleroAvanti(struct InfoBaseSimulazione *infoSimulazione, gsl_vector *statoIniziale)</div><div class="ttdoc">Metodo di integrazione Eulero Avanti.</div><div class="ttdef"><b>Definition</b> <a href="ode_8c_source.html#l00018">ode.c:18</a></div></div>
+<div class="ttc" id="astructInfoBaseSimulazione_html"><div class="ttname"><a href="structInfoBaseSimulazione.html">InfoBaseSimulazione</a></div><div class="ttdoc">Struttura dati per impostare il calcolo della soluzione numerica.</div><div class="ttdef"><b>Definition</b> <a href="ode_8h_source.html#l00014">ode.h:14</a></div></div>
+<div class="ttc" id="astructInfoBaseSimulazione_html_a42206ff02bca016ca761e78f71fba313"><div class="ttname"><a href="structInfoBaseSimulazione.html#a42206ff02bca016ca761e78f71fba313">InfoBaseSimulazione::tCondizione</a></div><div class="ttdeci">double * tCondizione</div><div class="ttdef"><b>Definition</b> <a href="ode_8h_source.html#l00017">ode.h:17</a></div></div>
+<div class="ttc" id="astructInfoBaseSimulazione_html_a5e4d10acd6f71904984613c299a55c57"><div class="ttname"><a href="structInfoBaseSimulazione.html#a5e4d10acd6f71904984613c299a55c57">InfoBaseSimulazione::dinamica</a></div><div class="ttdeci">ODE dinamica</div><div class="ttdef"><b>Definition</b> <a href="ode_8h_source.html#l00015">ode.h:15</a></div></div>
+<div class="ttc" id="astructInfoBaseSimulazione_html_a6d4d3268598e63e2ad6562114cf8ec66"><div class="ttname"><a href="structInfoBaseSimulazione.html#a6d4d3268598e63e2ad6562114cf8ec66">InfoBaseSimulazione::condizione</a></div><div class="ttdeci">Condizione condizione</div><div class="ttdef"><b>Definition</b> <a href="ode_8h_source.html#l00016">ode.h:16</a></div></div>
+<div class="ttc" id="astructInfoBaseSimulazione_html_a994298c0556deae608a0b34c7315e232"><div class="ttname"><a href="structInfoBaseSimulazione.html#a994298c0556deae608a0b34c7315e232">InfoBaseSimulazione::indiceCondizione</a></div><div class="ttdeci">size_t * indiceCondizione</div><div class="ttdef"><b>Definition</b> <a href="ode_8h_source.html#l00018">ode.h:18</a></div></div>
+<div class="ttc" id="astructInfoBaseSimulazione_html_aa92d27d829deaa7195f475e1617a69b5"><div class="ttname"><a href="structInfoBaseSimulazione.html#aa92d27d829deaa7195f475e1617a69b5">InfoBaseSimulazione::h</a></div><div class="ttdeci">double t0 double T double h</div><div class="ttdef"><b>Definition</b> <a href="ode_8h_source.html#l00021">ode.h:21</a></div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generato da&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.8
+</small></address>
+</body>
+</html>
